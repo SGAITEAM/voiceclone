@@ -7,7 +7,7 @@
       name="viewport"
       content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
 
-    <title>Ses Klonu İle Çeviri</title>
+    <title>Ses Klonu İle Çeviri Dinleyici</title>
 
     <meta name="description" content="" />
 
@@ -73,7 +73,7 @@
             <a href="/" class="app-brand-link">
               <span class="app-brand-logo demo">
                 <span class="text-primary">
-                  <img src="img/clone-voice-logo.png" width="32" alt="CloneVoice">
+                  <img src="/img/clone-voice-logo.png" width="32" alt="CloneVoice">
                 </span>
               </span>
               <span class="app-brand-text demo menu-text fw-bold ms-2 ps-1">CloneSpeak</span>
@@ -89,7 +89,7 @@
                 <a class="nav-link fw-medium" aria-current="page" href="/#">Ana Sayfa</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link fw-medium active" href="#">Uygulama</a>
+                <a class="nav-link fw-medium active" href="/voice">Uygulama</a>
               </li>
               <li class="nav-item">
                 <a class="nav-link fw-medium" href="/#landingFAQ">Proje Hakkında</a>
@@ -105,13 +105,12 @@
           <!-- Toolbar: Start -->
           <ul class="navbar-nav flex-row align-items-center ms-auto">
             <!-- Style Switcher -->
-            <li class="nav-item me-2 me-xl-1">
-              <a class="nav-link hide-arrow" id="openQrModal" style="cursor:pointer;" >
-                <i class="icon-base ti tabler-qrcode icon-lg "></i>
-              </a>
-            </li>
             <li class="nav-item dropdown-style-switcher dropdown me-2 me-xl-1">
-              <a class="nav-link dropdown-toggle hide-arrow" id="nav-theme" href="javascript:void(0);" data-bs-toggle="dropdown">
+              <a
+                class="nav-link dropdown-toggle hide-arrow"
+                id="nav-theme"
+                href="javascript:void(0);"
+                data-bs-toggle="dropdown">
                 <i class="icon-base ti tabler-sun icon-lg theme-icon-active"></i>
                 <span class="d-none ms-2" id="nav-theme-text">Toggle theme</span>
               </a>
@@ -177,9 +176,9 @@
           <div class="container">
             <div class="hero-text-box text-center position-relative">
               <h1 id="liveText" class="text-primary hero-title display-6 fw-extrabold">
-                Konuşmaya Başlamak İçin Butona Tıklayın
+                Simultane Klon ile çeviri dinleyici
               </h1>
-              <div class="landing-hero-btn d-inline-block position-relative">
+              {{-- <div class="landing-hero-btn d-inline-block position-relative">
                 <button id="startBtn"
                         class="btn btn-xl rounded-pill btn-icon btn-primary waves-effect waves-light mt-3"
                         style="width: 77px; height: 77px;">
@@ -190,7 +189,7 @@
                         style="width: 77px; height: 77px;">
                   <span class="icon-base ti tabler-microphone-off icon-22px"></span>
                 </button>
-              </div>
+              </div> --}}
               <!-- LOADER -->
               <div id="loader" class="mt-4 d-none">
                 <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
@@ -205,43 +204,6 @@
       </section>
       <!-- Hero: End -->
     </div>
-
-    <!-- QR MODAL -->
-    <div class="modal fade" id="qrModal" tabindex="-1" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0 rounded-4 shadow-lg">
-
-          <div class="modal-header border-0 pb-0">
-            <h5 class="modal-title fw-bold">Oturumu Paylaş</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-          </div>
-
-          <div class="modal-body text-center pt-0">
-
-            <!-- QR Gradient Box -->
-            <div class="qr-box mx-auto my-3 p-3 rounded-4">
-              <div id="qrCodeContainer"></div>
-            </div>
-
-            <!-- Short Link -->
-            <div class="input-group mt-3 mb-2">
-                <input type="text" id="qrLinkInput" class="form-control text-center" readonly>
-                <button class="btn btn-primary" id="copyQrLinkBtn">
-                    <i class="icon-base ti tabler-copy"></i>
-                </button>
-            </div>
-
-            <small class="text-muted">
-              Bu bağlantıyı paylaşabilir veya QR kodu okutabilirsiniz.
-            </small>
-
-          </div>
-
-        </div>
-      </div>
-    </div>
-    <!-- QR MODAL END -->
-
 
     <!-- Core JS -->
     <!-- build:js assets/vendor/js/theme.js -->
@@ -263,7 +225,7 @@
     <!-- Main JS -->
 
     <script src="../../assets/js/front-main.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
+
 
 
     <!-- Page JS -->
@@ -276,223 +238,39 @@
 
 <script>
 document.addEventListener("DOMContentLoaded", async () => {
-
-    const startBtn = document.getElementById("startBtn");
-    const stopBtn   = document.getElementById("stopBtn");
-    const liveText  = document.getElementById("liveText");
-
-    let audioContext;
-    let stream;
-
-    let recorderStream;  
-    let recorderFull;    
-    let intervalId;
-
-    let firstChunkArrived = false; // Listening yazısını kaldırmak için
     const sessionId = "{{ $session_id }}";
+    const finalTextEl = document.getElementById("liveText");
     // WebSocket bağlantısı
     const socket = io("http://127.0.0.1:5001", {
         query: { session_id: sessionId }
     });
     // Odaya katıl
     socket.emit("joinSession", { session_id: sessionId });
-
-    function playBase64Audio(b64) {
-        const audio = new Audio("data:audio/mp3;base64," + b64);
-        audio.play();
-    }
-
-    // ================================================================
-    // START
-    // ================================================================
-    startBtn.addEventListener("click", async () => {
-
-        stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        audioContext = new AudioContext();
-        const source = audioContext.createMediaStreamSource(stream);
-
-        recorderStream = new Recorder(source, { numChannels: 1 });
-        recorderStream.record();
-
-        recorderFull = new Recorder(source, { numChannels: 1 });
-        recorderFull.record();
-
-        liveText.textContent = "🎙 Listening...";
-        firstChunkArrived = false;
-
-        startBtn.classList.add("d-none");
-        stopBtn.classList.remove("d-none");
-
-        // Chunk STT
-        intervalId = setInterval(() => {
-            recorderStream.exportWAV(async (blob) => {
-                recorderStream.clear();
-
-                try {
-                    let form = new FormData();
-                    form.append("audio", blob, "chunk.wav");
-
-                    const res = await fetch("http://127.0.0.1:5001/stt", {
-                        method: "POST",
-                        body: form
-                    });
-
-                    const data = await res.json();
-
-                    // İlk çeviri geldiğinde "Listening" mesajını temizle
-                    if (!firstChunkArrived && data.translated) {
-                        liveText.textContent = "";
-                        firstChunkArrived = true;
-                    }
-
-                    // Chunk çevirisini yaz
-                    if (data.translated) {
-                        liveText.textContent += data.translated + "\n";
-                    }
-
-                } catch (err) {
-                    console.error("STREAM STT ERROR:", err);
-                }
-            });
-
-        }, 2000);
+    // Sadece final çeviriyi göster
+    socket.on("final_text", (data) => {
+        finalTextEl.textContent = data.text || "Çeviri alınamadı.";
     });
+    // Final TTS sesini çal
+    socket.on("final_tts", (data) => {
+        if (data.audio_base64) {
+            const audio = new Audio("data:audio/mp3;base64," + data.audio_base64);
+            audio.play();
+        }
+    });
+    
 
-    // ================================================================
-    // STOP
-    // ================================================================
-    stopBtn.addEventListener("click", () => {
-
-        clearInterval(intervalId);
-
-        recorderStream.stop();
-        recorderFull.stop();
-
-        stream.getTracks().forEach(t => t.stop());
-
-        startBtn.classList.remove("d-none");
-        stopBtn.classList.add("d-none");
-
-        // Final TTS mesajı göster
-        liveText.textContent = "⏳ Preparing final TTS...";
-
-        // FULL WAV → TTS
-        recorderFull.exportWAV(async (blob) => {
-
-            let form = new FormData();
-            form.append("audio", blob, "full.wav");
-
-            try {
-                const res = await fetch("http://127.0.0.1:5001/stt_translate_tts", {
-                    method: "POST",
-                    body: form
-                });
-
-                const data = await res.json();
-
-                // "Preparing..." mesajını kaldır
-                liveText.textContent = "";
-
-                // Final çeviri
-                liveText.textContent = data.translated || "";
-
-                socket.emit("final_text", {
-                  session_id: "{{ $session_id }}",
-                  text: data.translated
-                });
-
-                // Final TTS
-                if (data.tts_audio_base64) {
-                    playBase64Audio(data.tts_audio_base64);
-
-                    socket.emit("final_tts", {
-                      session_id: "{{ $session_id }}",
-                      audio_base64: data.tts_audio_base64
-                    });
-                }
-
-            } catch (err) {
-                console.error("FINAL TTS ERROR:", err);
-                liveText.textContent = "❌ Final TTS error.";
-            }
-
-        });
-
+    socket.on("server_hello", (data) => {
+      console.log("SERVER_HELLO:", data);
     });
 
 });
 
 
-
-
-// QR MODAL
-document.getElementById("openQrModal").addEventListener("click", function () {
-
-    const qrModal = new bootstrap.Modal(document.getElementById('qrModal'));
-    qrModal.show();
-
-    // QR container tamamen temizle (garantili)
-    const qrContainer = document.getElementById("qrCodeContainer");
-    while (qrContainer.firstChild) {
-        qrContainer.removeChild(qrContainer.firstChild);
-    }
-
-    // QR URL
-    const qrUrl = "{{ url('/live/' . $session_id) }}";
-
-    // Input'a yaz
-    document.getElementById("qrLinkInput").value = qrUrl;
-
-    // QR oluştur
-    new QRCode(qrContainer, {
-        text: qrUrl,
-        width: 220,
-        height: 220
-    });
-});
-
-
-// COPY BUTTON
-document.getElementById("copyQrLinkBtn").addEventListener("click", function () {
-    const input = document.getElementById("qrLinkInput");
-    input.select();
-    input.setSelectionRange(0, 99999); // iOS için
-
-    navigator.clipboard.writeText(input.value)
-        .then(() => {
-            this.innerHTML = '<i class="icon-base ti tabler-check"></i>';
-            setTimeout(() => {
-                this.innerHTML = '<i class="icon-base ti tabler-copy"></i>';
-            }, 1200);
-        })
-        .catch(err => console.error("Copy failed:", err));
-});
 
 
 </script>
 
-<style>
-  /* Gradient border box */
-  .qr-box {
-      background: white;
-      border-radius: 20px;
-      padding: 20px;
-      display: inline-block;
 
-      /* Gradient border */
-      border: 4px solid transparent;
-      background-image:
-          linear-gradient(white, white),
-          linear-gradient(135deg, #4f46e5, #06b6d4);
-      background-origin: border-box;
-      background-clip: padding-box, border-box;
-
-      /* Shadow */
-      box-shadow: 0 8px 28px rgba(0,0,0,0.12);
-  }
-
-
-</style>
 
 
 

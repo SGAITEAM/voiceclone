@@ -15,6 +15,9 @@ Route::middleware(['auth'])->group(function () {
     // return view('voice');
 });
 
+Route::get('/live/{session_id}', [VoiceController::class, 'mirror'])->name('voice.mirror');
+
+
 
 Route::get('/lang/{locale}', function ($locale) {
     // İzin verilen diller

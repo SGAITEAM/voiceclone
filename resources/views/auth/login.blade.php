@@ -9,7 +9,7 @@
     <!-- Left Side Illustration -->
     <div class="d-none d-xl-flex col-xl-8 p-0">
       <div class="auth-cover-bg auth-cover-bg-color d-flex justify-content-center align-items-center">
-        <img src="{{ asset('assets/img/illustrations/auth-login-illustration-light.png') }}" alt="auth-login-cover" class="img-fluid my-5 auth-illustration" />
+        <img src="{{ asset('assets/img/illustrations/card-website-analytics-2.png') }}" alt="auth-login-cover" class="img-fluid my-5 auth-illustration" />
         <img src="{{ asset('assets/img/illustrations/bg-shape-image-light.png') }}" alt="bg-shape" class="platform-bg" />
       </div>
     </div>
@@ -22,9 +22,9 @@
         <div class="app-brand mb-4 text-center">
           <a href="{{ url('/') }}" class="app-brand-link gap-2 text-center">
             <span class="app-brand-logo demo ">
-              <img src="{{ asset('assets/img/app-logo.png') }}" alt="Logo" height="64" width="64">
+              <img src="{{ asset('/img/clone-voice-logo.png') }}" alt="Logo" height="64" width="64">
             </span>
-            <h1 class="mb-0 display-5">MenuMood</h1>
+            <h1 class="mb-0 display-5">CloneVoice</h1>
           </a>
         </div>
 
