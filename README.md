@@ -1,8 +1,8 @@
 <p align="center">
-   <img src="public/img/clone-voice-logo.png.png" alt="App Logo" width="200"/>
+   <img src="public/img/clone-voice-logo.png" alt="App Logo" width="200"/>
 </p>
 
-<h1 align="center">Breezavel</h1>
+<h1 align="center">CloneVoice</h1>
 
 <p align="center">
   2204-A için hazırlanan ses klonlama ile çalışan bir dil çeviri uygulamasıdır<br>
