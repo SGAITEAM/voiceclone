@@ -35,8 +35,8 @@
 ### Kurulum Adımları
 
 ```bash
-git clone https://github.com/ascanipek/breezavel.git
-cd breezavel
+git clone https://github.com/SGAITEAM/voiceclone
+cd voiceclone
 
 composer install
 cp .env.example .env
@@ -44,3 +44,8 @@ php artisan key:generate
 
 # Veritabanı ayarlarını .env içinde yapın
 php artisan migrate --seed
+```
+
+
+
+
