@@ -16,10 +16,7 @@ class User extends Authenticatable implements MustVerifyEmail
      * Mass assignable attributes.
      */
     protected $fillable = [
-        'name', 'email', 'password', 'brand', 'phone', 'is_active', 'theme', 'is_paid', 'url',
-        'color', 'currency', 'is_order', 'discount', 'minorder', 'real_paid', 'order_type',
-        'type', 'must_verify', 'is_open', 'remain_lang', 'remain_lang_sub', 'default_lang',
-        'product_discount', 'is_franchise', 'franchise_id', 'wapp', 'nonrest',
+        'name', 'email', 'password', 'email_verified_at', 'lang', 'source_lang', 'target_lang',
     ];
 
     /**

@@ -195,7 +195,11 @@
                 ve kimliğinizi kaybetmeden iletişim kurun.  --}}
                 
                 Gerçek zamanlı çeviri artık sadece kelimeleri değil, <br class="d-none d-lg-block" />
-                kendi sesiniz duygularınızı da aktarır.
+                kendi sesiniz ve
+                <span class="position-relative fw-extrabold z-1">duygularınızı da aktarır.
+                  <img src="../../assets/img/front-pages/icons/section-title-icon.png" alt="laptop charging" class="section-title-img position-absolute object-fit-contain bottom-0 z-n1">
+                </span>
+                 
               </h2>
               <div class="landing-hero-btn d-inline-block position-relative">
                 <span class="hero-btn-item position-absolute d-none d-md-flex fw-medium">
