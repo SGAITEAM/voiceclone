@@ -84,7 +84,16 @@
                   <img src="img/clone-voice-logo.png" width="32" alt="CloneVoice">
                 </span>
               </span>
-              <span class="app-brand-text demo menu-text fw-bold ms-2 ps-1">CloneSpeak</span>
+              {{-- <span class="app-brand-text demo menu-text fw-bold ms-2 ps-1">CloneSpeak</span> --}}
+              <!-- Desktop için uzun yazı -->
+              <span class="d-none d-sm-inline app-brand-text demo menu-text fw-bold ms-2 ps-1">
+                  CloneSpeak
+              </span>
+
+              <!-- Mobil için kısa logo/metin -->
+              <span class="d-inline d-sm-none app-brand-text demo menu-text fw-bold ms-2 ps-1">
+                  CS
+              </span>
             </a>
           </div>
           <!-- Menu logo wrapper: End -->
